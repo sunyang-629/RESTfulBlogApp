@@ -31,6 +31,22 @@ app.get("/blogs", (req, res) => {
     })
 });
 
+app.get("/blogs/new", (req, res) => {
+    res.render("new")
+})
+
+app.post("/blogs", (req, res) => {
+    Blog.create(req.body.blog, (err, newBlog) => {
+        if (err) {
+            res.render("new")
+        }
+        res.redirect("/blogs");
+    })
+})
+
+app.get("/blogs/:id", (req, res) => {
+    res.send("SHOW PAGE!!")
+})
 
 app.listen(3567, function() {
     console.log('server is running');  
