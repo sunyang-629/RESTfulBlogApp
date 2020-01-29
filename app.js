@@ -45,7 +45,12 @@ app.post("/blogs", (req, res) => {
 })
 
 app.get("/blogs/:id", (req, res) => {
-    res.send("SHOW PAGE!!")
+    Blog.findById(req.params.id, (err, foundBlog) => {
+        if (err) {
+            res.redirect("/blogs")
+        }
+        res.render("show", { blog: foundBlog })
+    })
 })
 
 app.listen(3567, function() {
