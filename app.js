@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
-const mongoose   = require('mongoose');
+const mongoose = require('mongoose');
+const methodOverride = require('method-override');
 const express    = require('express');
 
 app              = express();
@@ -8,6 +9,7 @@ mongoose.connect("mongodb://localhost:27017/TWDB", { useNewUrlParser: true, useU
 app.set("view engine", "ejs");
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 
 const blogSchema = new mongoose.Schema({
     title: String,
@@ -50,6 +52,24 @@ app.get("/blogs/:id", (req, res) => {
             res.redirect("/blogs")
         }
         res.render("show", { blog: foundBlog })
+    })
+})
+
+app.get("/blogs/:id/edit", (req, res) => {
+    Blog.findById(req.params.id, (err, foundBlog) => {
+        if (err) {
+            res.redirect("/blogs")
+        }
+        res.render("edit", { blog: foundBlog });
+    }) 
+})
+
+app.put("/blogs/:id", (req, res) => {
+    Blog.findByIdAndUpdate(req.params.id, req.body.blog, (err, updatedBlog) => {
+        if (err) {
+            res.redirect("/blogs")
+        }
+        res.redirect("/blogs/" + req.params.id)
     })
 })
 
